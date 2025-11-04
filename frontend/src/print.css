@@ -1,0 +1,158 @@
+/* Print-friendly styles */
+@media print {
+  /* Hide navigation and interactive elements */
+  .print\:hidden,
+  nav,
+  button,
+  input[type="checkbox"],
+  .pagination,
+  [class*="hover:"],
+  [class*="cursor-pointer"] {
+    display: none !important;
+  }
+
+  /* Reset page margins and colors */
+  @page {
+    margin: 1cm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+  }
+
+  /* Ensure content fits on page */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Remove background colors from cards */
+  .bg-white,
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-indigo-50 {
+    background: white !important;
+  }
+
+  /* Keep chart and table borders visible */
+  table,
+  th,
+  td {
+    border: 1px solid #ddd !important;
+  }
+
+  /* Ensure tables don't break across pages */
+  table {
+    page-break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* Chart container adjustments */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Ensure text is readable */
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700 {
+    color: #333 !important;
+  }
+
+  /* Keep series color badges visible */
+  [class*="bg-"][class*="rounded-full"] {
+    border: 1px solid currentColor !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Headers and titles */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    color: black !important;
+  }
+
+  /* Links should show URL */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+
+  /* Improve spacing for printed content */
+  .space-y-6 > * {
+    margin-bottom: 1cm;
+  }
+
+  /* Optimize chart for print */
+  .measurement-chart {
+    page-break-inside: avoid;
+    max-height: 15cm;
+  }
+
+  /* Table improvements for print */
+  .measurement-table {
+    page-break-before: always;
+  }
+
+  .measurement-table th {
+    background-color: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Show print-only elements */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:inline {
+    display: inline !important;
+  }
+
+  /* Print metadata header */
+  .print-header {
+    display: block !important;
+    margin-bottom: 1cm;
+    padding-bottom: 0.5cm;
+    border-bottom: 2px solid #333;
+  }
+
+  .print-footer {
+    display: block !important;
+    margin-top: 1cm;
+    padding-top: 0.5cm;
+    border-top: 1px solid #ccc;
+    font-size: 8pt;
+    text-align: center;
+  }
+}
+
+/* Print-specific utility classes */
+@media screen {
+  .print\:hidden {
+    display: initial;
+  }
+
+  .print\:block,
+  .print\:inline,
+  .print-header,
+  .print-footer {
+    display: none;
+  }
+}

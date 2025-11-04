@@ -5,6 +5,7 @@ import api from '../utils/api'
 export const useDataStore = defineStore('data', () => {
   const series = ref([])
   const measurements = ref([])
+  const sensors = ref([])
   const selectedSeriesIds = ref([])
   const dateRange = ref({
     start: null,
@@ -140,9 +141,45 @@ export const useDataStore = defineStore('data', () => {
     dateRange.value = { start, end }
   }
 
+  // Sensor functions
+  async function fetchSensors() {
+    try {
+      loading.value = true
+      const response = await api.get('/api/sensors/')
+      sensors.value = response.data
+    } catch (error) {
+      console.error('Failed to fetch sensors:', error)
+      throw error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createSensor(sensorData) {
+    try {
+      const response = await api.post('/api/sensors/', sensorData)
+      sensors.value.push(response.data)
+      return response.data
+    } catch (error) {
+      console.error('Failed to create sensor:', error)
+      throw error
+    }
+  }
+
+  async function deleteSensor(sensorId) {
+    try {
+      await api.delete(`/api/sensors/${sensorId}`)
+      sensors.value = sensors.value.filter((s) => s.id !== sensorId)
+    } catch (error) {
+      console.error('Failed to delete sensor:', error)
+      throw error
+    }
+  }
+
   return {
     series,
     measurements,
+    sensors,
     selectedSeriesIds,
     dateRange,
     loading,
@@ -156,5 +193,8 @@ export const useDataStore = defineStore('data', () => {
     deleteMeasurement,
     toggleSeriesSelection,
     setDateRange,
+    fetchSensors,
+    createSensor,
+    deleteSensor,
   }
 })
