@@ -9,15 +9,30 @@
       <p class="text-yellow-800">You need admin privileges to access this page.</p>
     </div>
 
-    <div v-else>
-      <!-- Dashboard content will be added in next tasks -->
-      <p class="text-gray-600">Dashboard components coming soon...</p>
+    <div v-else class="space-y-6">
+      <!-- Series Management -->
+      <SeriesManagement />
+
+      <!-- Measurement Management -->
+      <MeasurementManagement />
     </div>
   </div>
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { useDataStore } from '../stores/data'
+import SeriesManagement from '../components/SeriesManagement.vue'
+import MeasurementManagement from '../components/MeasurementManagement.vue'
 
 const authStore = useAuthStore()
+const dataStore = useDataStore()
+
+onMounted(async () => {
+  if (authStore.isAdmin) {
+    await dataStore.fetchSeries()
+    await dataStore.fetchMeasurements()
+  }
+})
 </script>

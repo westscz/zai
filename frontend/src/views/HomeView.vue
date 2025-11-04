@@ -5,32 +5,42 @@
       <p class="text-gray-600">Browse and visualize measurement data from all series</p>
     </div>
 
-    <div v-if="dataStore.loading" class="text-center py-12">
+    <div v-if="initialLoading" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       <p class="mt-4 text-gray-600">Loading data...</p>
     </div>
 
-    <div v-else>
-      <!-- Placeholder for chart and table components (to be created in next tasks) -->
-      <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Chart will be here</h2>
-      </div>
+    <div v-else class="space-y-6">
+      <!-- Series Filter -->
+      <SeriesFilter />
 
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold mb-4">Table will be here</h2>
-      </div>
+      <!-- Chart -->
+      <MeasurementChart />
+
+      <!-- Table -->
+      <MeasurementTable />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useDataStore } from '../stores/data'
+import MeasurementChart from '../components/MeasurementChart.vue'
+import MeasurementTable from '../components/MeasurementTable.vue'
+import SeriesFilter from '../components/SeriesFilter.vue'
 
 const dataStore = useDataStore()
+const initialLoading = ref(true)
 
 onMounted(async () => {
-  await dataStore.fetchSeries()
-  await dataStore.fetchMeasurements()
+  try {
+    await dataStore.fetchSeries()
+    await dataStore.fetchMeasurements()
+  } catch (error) {
+    console.error('Failed to load initial data:', error)
+  } finally {
+    initialLoading.value = false
+  }
 })
 </script>
