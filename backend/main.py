@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import auth
+from backend.routers import auth, series
 
 app = FastAPI(
     title="ZAI Measurement Data Collection API",
@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(series.router)
 
 @app.get("/")
 async def root():
