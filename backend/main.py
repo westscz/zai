@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import auth, series, measurements, sensors
+from routers import auth, series, measurements, sensors
 
 app = FastAPI(
     title="ZAI Measurement Data Collection API",

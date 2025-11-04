@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.database import get_db
-from backend.schemas import SensorCreate, SensorResponse, MeasurementCreate, MeasurementResponse
-from backend.models import Sensor, Series, Measurement, User
-from backend.dependencies import get_current_admin_user
-from backend.auth import generate_api_key
+from database import get_db
+from schemas import SensorCreate, SensorResponse, MeasurementCreate, MeasurementResponse
+from models import Sensor, Series, Measurement, User
+from dependencies import get_current_admin_user
+from auth import generate_api_key
 from datetime import datetime
 
 router = APIRouter(prefix="/api/sensors", tags=["Sensors"])

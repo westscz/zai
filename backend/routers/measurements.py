@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from typing import List, Optional
 from datetime import datetime
-from backend.database import get_db
-from backend.schemas import MeasurementCreate, MeasurementUpdate, MeasurementResponse
-from backend.models import Measurement, Series, User
-from backend.dependencies import get_current_user, get_current_admin_user
+from database import get_db
+from schemas import MeasurementCreate, MeasurementUpdate, MeasurementResponse
+from models import Measurement, Series, User
+from dependencies import get_current_user, get_current_admin_user
 
 router = APIRouter(prefix="/api/measurements", tags=["Measurements"])
 

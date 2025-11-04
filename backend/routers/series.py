@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.database import get_db
-from backend.schemas import SeriesCreate, SeriesUpdate, SeriesResponse
-from backend.models import Series, User
-from backend.dependencies import get_current_user, get_current_admin_user
+from database import get_db
+from schemas import SeriesCreate, SeriesUpdate, SeriesResponse
+from models import Series, User
+from dependencies import get_current_user, get_current_admin_user
 
 router = APIRouter(prefix="/api/series", tags=["Series"])
 
