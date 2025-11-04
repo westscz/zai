@@ -1,8 +1,8 @@
 -- database/seed_data.sql
 -- Password is 'admin123' hashed with bcrypt
 INSERT INTO users (username, email, hashed_password, is_admin) VALUES
-('admin', 'admin@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYzNBkrJ3zu', TRUE),
-('reader', 'reader@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYzNBkrJ3zu', FALSE);
+('admin', 'admin@example.com', '$2b$12$gmr/ukzv4FTceHI488ZTL.Ac/u4lX2Y7nhZ2R48vOS.7AlWzjE4nW', TRUE),
+('reader', 'reader@example.com', '$2b$12$gmr/ukzv4FTceHI488ZTL.Ac/u4lX2Y7nhZ2R48vOS.7AlWzjE4nW', FALSE);
 
 INSERT INTO series (name, description, min_value, max_value, color, icon, unit, created_by) VALUES
 ('Temperature Sensor 1', 'Living room temperature monitoring', -20.0, 50.0, '#EF4444', 'temperature-high', '°C', 1),
@@ -14,22 +14,22 @@ INSERT INTO measurements (series_id, value, timestamp, created_by)
 SELECT
     1,
     20.0 + (random() * 5),
-    NOW() - (interval '1 hour' * generate_series(0, 168)),
+    NOW() - (interval '1 hour' * gs),
     1
-FROM generate_series(0, 168);
+FROM generate_series(0, 168) AS gs;
 
 INSERT INTO measurements (series_id, value, timestamp, created_by)
 SELECT
     2,
     45.0 + (random() * 20),
-    NOW() - (interval '1 hour' * generate_series(0, 168)),
+    NOW() - (interval '1 hour' * gs),
     1
-FROM generate_series(0, 168);
+FROM generate_series(0, 168) AS gs;
 
 INSERT INTO measurements (series_id, value, timestamp, created_by)
 SELECT
     3,
     1013.0 + (random() * 20 - 10),
-    NOW() - (interval '1 hour' * generate_series(0, 168)),
+    NOW() - (interval '1 hour' * gs),
     1
-FROM generate_series(0, 168);
+FROM generate_series(0, 168) AS gs;
