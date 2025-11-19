@@ -170,7 +170,10 @@ const chartOptions = computed(() => ({
       },
       grid: {
         display: false
-      }
+      },
+      // Zoom to selected range
+      min: dataStore.chartSelectionRange ? dataStore.chartSelectionRange.start : undefined,
+      max: dataStore.chartSelectionRange ? dataStore.chartSelectionRange.end : undefined
     },
     y: {
       beginAtZero: false,
