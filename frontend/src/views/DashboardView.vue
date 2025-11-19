@@ -13,9 +13,6 @@
       <!-- Series Management -->
       <SeriesManagement />
 
-      <!-- Sensors Management -->
-      <SensorsManagement />
-
       <!-- Measurement Management -->
       <MeasurementManagement />
     </div>
@@ -27,7 +24,6 @@ import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useDataStore } from '../stores/data'
 import SeriesManagement from '../components/SeriesManagement.vue'
-import SensorsManagement from '../components/SensorsManagement.vue'
 import MeasurementManagement from '../components/MeasurementManagement.vue'
 
 const authStore = useAuthStore()
@@ -36,7 +32,6 @@ const dataStore = useDataStore()
 onMounted(async () => {
   if (authStore.isAdmin) {
     await dataStore.fetchSeries()
-    await dataStore.fetchSensors()
     await dataStore.fetchMeasurements()
   }
 })

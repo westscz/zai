@@ -36,7 +36,8 @@
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <!-- Screen view - paginated -->
+        <tbody class="bg-white divide-y divide-gray-200 print:hidden">
           <tr v-if="loading">
             <td colspan="4" class="px-6 py-4 text-center text-gray-500">
               Loading...
@@ -47,7 +48,14 @@
               No measurements found
             </td>
           </tr>
-          <tr v-else v-for="measurement in paginatedMeasurements" :key="measurement.id" class="hover:bg-gray-50">
+          <tr
+            v-else
+            v-for="measurement in paginatedMeasurements"
+            :key="measurement.id"
+            class="hover:bg-gray-50 cursor-pointer"
+            :class="{ 'bg-indigo-50': dataStore.selectedMeasurementId === measurement.id }"
+            @click="selectMeasurement(measurement)"
+          >
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ formatTimestamp(measurement.timestamp) }}
             </td>
@@ -64,13 +72,13 @@
             </td>
             <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <button
-                @click="editMeasurement(measurement)"
+                @click.stop="editMeasurement(measurement)"
                 class="text-indigo-600 hover:text-indigo-900 mr-4"
               >
                 Edit
               </button>
               <button
-                @click="deleteMeasurement(measurement)"
+                @click.stop="deleteMeasurement(measurement)"
                 class="text-red-600 hover:text-red-900"
               >
                 Delete
@@ -78,11 +86,30 @@
             </td>
           </tr>
         </tbody>
+        <!-- Print view - all data -->
+        <tbody class="bg-white divide-y divide-gray-200 hidden print:table-row-group">
+          <tr v-for="measurement in filteredMeasurements" :key="'print-' + measurement.id">
+            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
+              {{ formatTimestamp(measurement.timestamp) }}
+            </td>
+            <td class="px-6 py-2 whitespace-nowrap">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                :style="{ backgroundColor: getSeriesColor(measurement.series_id) + '20', color: getSeriesColor(measurement.series_id) }"
+              >
+                {{ getSeriesName(measurement.series_id) }}
+              </span>
+            </td>
+            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
+              {{ measurement.value.toFixed(2) }} {{ getSeriesUnit(measurement.series_id) }}
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+    <div v-if="totalPages > 1" class="bg-gray-50 px-6 py-3 border-t border-gray-200 print:hidden">
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-700">
           Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, filteredMeasurements.length) }} of {{ filteredMeasurements.length }} results
@@ -138,9 +165,21 @@ const pageSize = ref(50)
 const showAddModal = ref(false)
 
 const filteredMeasurements = computed(() => {
-  return dataStore.measurements.filter(m =>
+  let measurements = dataStore.measurements.filter(m =>
     dataStore.selectedSeriesIds.includes(m.series_id)
   )
+
+  // Filter by chart selection range if set
+  if (dataStore.chartSelectionRange) {
+    const start = new Date(dataStore.chartSelectionRange.start).getTime()
+    const end = new Date(dataStore.chartSelectionRange.end).getTime()
+    measurements = measurements.filter(m => {
+      const timestamp = new Date(m.timestamp).getTime()
+      return timestamp >= start && timestamp <= end
+    })
+  }
+
+  return measurements
 })
 
 const totalPages = computed(() => Math.ceil(filteredMeasurements.value.length / pageSize.value))
@@ -180,6 +219,10 @@ function getSeriesColor(seriesId) {
 function getSeriesUnit(seriesId) {
   const series = dataStore.series.find(s => s.id === seriesId)
   return series?.unit || ''
+}
+
+function selectMeasurement(measurement) {
+  dataStore.setSelectedMeasurement(measurement.id)
 }
 
 async function editMeasurement(measurement) {

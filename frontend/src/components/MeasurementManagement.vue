@@ -155,8 +155,13 @@
       v-if="showCreateModal || showEditModal"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
       @click.self="closeModal"
+      @keydown.esc="closeModal"
     >
-      <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+      <div
+        ref="modalRef"
+        class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white"
+        @keydown.tab="trapFocus"
+      >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-gray-900">
             {{ showEditModal ? 'Edit Measurement' : 'Add New Measurement' }}
@@ -240,12 +245,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useDataStore } from '../stores/data'
 import { format } from 'date-fns'
 
 const dataStore = useDataStore()
 
+const modalRef = ref(null)
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const editingMeasurementId = ref(null)
@@ -398,4 +404,36 @@ async function deleteMeasurement(measurement) {
     alert('Failed to delete measurement: ' + (error.response?.data?.detail || error.message))
   }
 }
+
+// Focus trap for modal accessibility
+function trapFocus(event) {
+  if (!modalRef.value) return
+
+  const focusableElements = modalRef.value.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  )
+  const firstElement = focusableElements[0]
+  const lastElement = focusableElements[focusableElements.length - 1]
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault()
+    lastElement.focus()
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault()
+    firstElement.focus()
+  }
+}
+
+// Auto-focus first input when modal opens
+watch([showCreateModal, showEditModal], async ([create, edit]) => {
+  if (create || edit) {
+    await nextTick()
+    if (modalRef.value) {
+      const firstInput = modalRef.value.querySelector('select, input')
+      if (firstInput) {
+        firstInput.focus()
+      }
+    }
+  }
+})
 </script>

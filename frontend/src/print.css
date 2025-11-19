@@ -6,8 +6,7 @@
   button,
   input[type="checkbox"],
   .pagination,
-  [class*="hover:"],
-  [class*="cursor-pointer"] {
+  [class*="hover:"] {
     display: none !important;
   }
 
@@ -123,6 +122,16 @@
 
   .print\:inline {
     display: inline !important;
+  }
+
+  .print\:table-row-group {
+    display: table-row-group !important;
+  }
+
+  /* Hide cursor-pointer class for print but keep the element */
+  [class*="cursor-pointer"] {
+    display: table-row !important;
+    cursor: default !important;
   }
 
   /* Print metadata header */

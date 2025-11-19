@@ -1,7 +1,13 @@
 <template>
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-900">Measurement Data</h2>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">Measurement Data</h2>
+        <p v-if="dataStore.chartSelectionRange" class="text-sm text-indigo-600 mt-1">
+          Selection: {{ formatDate(dataStore.chartSelectionRange.start) }} - {{ formatDate(dataStore.chartSelectionRange.end) }}
+          <button @click="clearSelection" class="ml-2 text-gray-500 hover:text-gray-700 underline">Clear</button>
+        </p>
+      </div>
       <div class="flex space-x-2">
         <button
           v-for="range in timeRanges"
@@ -28,8 +34,30 @@
     </div>
 
     <div v-else class="relative h-96">
-      <Line :data="chartData" :options="chartOptions" />
+      <Line
+        ref="chartRef"
+        :data="chartData"
+        :options="chartOptions"
+        @mousedown="onMouseDown"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+        @mouseleave="onMouseLeave"
+      />
+      <!-- Selection overlay -->
+      <div
+        v-if="isSelecting && selectionStart !== null && selectionEnd !== null"
+        class="absolute top-0 bg-indigo-200 bg-opacity-30 pointer-events-none"
+        :style="{
+          left: Math.min(selectionStart, selectionEnd) + 'px',
+          width: Math.abs(selectionEnd - selectionStart) + 'px',
+          height: '100%'
+        }"
+      ></div>
     </div>
+
+    <p class="text-xs text-gray-500 mt-2">
+      Tip: Click and drag on the chart to select a time range and filter the table below.
+    </p>
   </div>
 </template>
 
@@ -49,6 +77,7 @@ import {
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import { useDataStore } from '../stores/data'
+import { format } from 'date-fns'
 
 // Register Chart.js components
 ChartJS.register(
@@ -64,8 +93,14 @@ ChartJS.register(
 
 const dataStore = useDataStore()
 
+const chartRef = ref(null)
 const loading = ref(false)
 const selectedTimeRange = ref('24h')
+
+// Selection state
+const isSelecting = ref(false)
+const selectionStart = ref(null)
+const selectionEnd = ref(null)
 
 const timeRanges = [
   { label: '24h', value: '24h' },
@@ -74,12 +109,35 @@ const timeRanges = [
   { label: 'All', value: 'all' }
 ]
 
-const chartOptions = {
+function formatDate(date) {
+  return format(new Date(date), 'MMM d, HH:mm')
+}
+
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   interaction: {
     mode: 'index',
     intersect: false,
+  },
+  onClick: (event, elements) => {
+    if (elements.length > 0) {
+      const element = elements[0]
+      const datasetIndex = element.datasetIndex
+      const index = element.index
+      const dataset = chartData.value.datasets[datasetIndex]
+
+      // Find the measurement
+      const seriesId = dataset.seriesId
+      const timestamp = dataset.data[index].x
+      const measurement = dataStore.measurements.find(
+        m => m.series_id === seriesId && new Date(m.timestamp).getTime() === timestamp.getTime()
+      )
+
+      if (measurement) {
+        dataStore.setSelectedMeasurement(measurement.id)
+      }
+    }
   },
   plugins: {
     legend: {
@@ -121,7 +179,7 @@ const chartOptions = {
       }
     }
   }
-}
+}))
 
 const chartData = computed(() => {
   const datasets = []
@@ -147,17 +205,32 @@ const chartData = computed(() => {
     const measurements = measurementsBySeries[seriesId]
       .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 
+    // Highlight selected measurement
+    const pointBackgroundColor = measurements.map(m =>
+      m.id === dataStore.selectedMeasurementId ? '#FBBF24' : series.color + '80'
+    )
+    const pointRadius = measurements.map(m =>
+      m.id === dataStore.selectedMeasurementId ? 8 : 2
+    )
+    const pointBorderWidth = measurements.map(m =>
+      m.id === dataStore.selectedMeasurementId ? 3 : 0
+    )
+
     datasets.push({
       label: series.name,
       data: measurements.map(m => ({
         x: new Date(m.timestamp),
-        y: m.value
+        y: m.value,
+        measurementId: m.id
       })),
       borderColor: series.color,
       backgroundColor: series.color + '20',
       tension: 0.4,
-      pointRadius: 2,
-      pointHoverRadius: 5,
+      pointRadius,
+      pointHoverRadius: 6,
+      pointBackgroundColor,
+      pointBorderColor: '#FBBF24',
+      pointBorderWidth,
       seriesId: series.id
     })
   })
@@ -167,8 +240,74 @@ const chartData = computed(() => {
   }
 })
 
+// Mouse event handlers for selection
+function onMouseDown(event) {
+  if (!chartRef.value?.chart) return
+
+  const chart = chartRef.value.chart
+  const rect = chart.canvas.getBoundingClientRect()
+  const x = event.clientX - rect.left
+
+  // Check if click is within chart area
+  if (x >= chart.chartArea.left && x <= chart.chartArea.right) {
+    isSelecting.value = true
+    selectionStart.value = x
+    selectionEnd.value = x
+  }
+}
+
+function onMouseMove(event) {
+  if (!isSelecting.value || !chartRef.value?.chart) return
+
+  const chart = chartRef.value.chart
+  const rect = chart.canvas.getBoundingClientRect()
+  const x = event.clientX - rect.left
+
+  // Clamp to chart area
+  selectionEnd.value = Math.max(chart.chartArea.left, Math.min(chart.chartArea.right, x))
+}
+
+function onMouseUp() {
+  if (!isSelecting.value || !chartRef.value?.chart) return
+
+  const chart = chartRef.value.chart
+
+  // Convert pixel positions to data values
+  const xScale = chart.scales.x
+  const startX = Math.min(selectionStart.value, selectionEnd.value)
+  const endX = Math.max(selectionStart.value, selectionEnd.value)
+
+  // Only set selection if dragged more than 10 pixels
+  if (Math.abs(endX - startX) > 10) {
+    const startDate = xScale.getValueForPixel(startX)
+    const endDate = xScale.getValueForPixel(endX)
+
+    dataStore.setChartSelectionRange({
+      start: new Date(startDate),
+      end: new Date(endDate)
+    })
+  }
+
+  isSelecting.value = false
+  selectionStart.value = null
+  selectionEnd.value = null
+}
+
+function onMouseLeave() {
+  if (isSelecting.value) {
+    isSelecting.value = false
+    selectionStart.value = null
+    selectionEnd.value = null
+  }
+}
+
+function clearSelection() {
+  dataStore.clearChartSelection()
+}
+
 function setTimeRange(range) {
   selectedTimeRange.value = range
+  dataStore.clearChartSelection()
   applyTimeRange()
 }
 
