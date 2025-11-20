@@ -45,7 +45,7 @@
 
       <!-- Print Footer -->
       <div class="print-footer">
-        <p>ZAI Measurement Data Collection System</p>
+        <p>📏 measures</p>
         <p>Page printed on {{ new Date().toLocaleDateString() }}</p>
       </div>
     </div>

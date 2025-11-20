@@ -5,23 +5,28 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:ui": "playwright test --ui",
+    "test:visual:report": "playwright show-report"
   },
   "dependencies": {
-    "vue": "^3.4.15",
     "axios": "^1.6.5",
-    "pinia": "^2.1.7",
-    "vue-router": "^4.2.5",
     "chart.js": "^4.4.1",
-    "vue-chartjs": "^5.3.0",
     "chartjs-adapter-date-fns": "^3.0.0",
-    "date-fns": "^3.2.0"
+    "date-fns": "^3.2.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.15",
+    "vue-chartjs": "^5.3.0",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@vitejs/plugin-vue": "^5.0.3",
-    "vite": "^5.0.11",
-    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",
-    "autoprefixer": "^10.4.17"
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.11"
   }
 }

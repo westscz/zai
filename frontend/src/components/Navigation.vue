@@ -4,7 +4,7 @@
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <router-link to="/" class="text-xl font-bold text-indigo-600">
-            ZAI Measurements
+            📏 measures
           </router-link>
 
           <div class="ml-10 flex space-x-4">

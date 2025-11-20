@@ -55,7 +55,7 @@
       ></div>
     </div>
 
-    <p class="text-xs text-gray-500 mt-2">
+    <p class="text-xs text-gray-500 mt-2 print:hidden">
       Tip: Click and drag on the chart to select a time range and filter the table below.
     </p>
   </div>

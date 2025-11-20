@@ -36,8 +36,7 @@
             </th>
           </tr>
         </thead>
-        <!-- Screen view - paginated -->
-        <tbody class="bg-white divide-y divide-gray-200 print:hidden">
+        <tbody class="bg-white divide-y divide-gray-200">
           <tr v-if="loading">
             <td colspan="4" class="px-6 py-4 text-center text-gray-500">
               Loading...
@@ -86,30 +85,11 @@
             </td>
           </tr>
         </tbody>
-        <!-- Print view - all data -->
-        <tbody class="bg-white divide-y divide-gray-200 hidden print:table-row-group">
-          <tr v-for="measurement in filteredMeasurements" :key="'print-' + measurement.id">
-            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
-              {{ formatTimestamp(measurement.timestamp) }}
-            </td>
-            <td class="px-6 py-2 whitespace-nowrap">
-              <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                :style="{ backgroundColor: getSeriesColor(measurement.series_id) + '20', color: getSeriesColor(measurement.series_id) }"
-              >
-                {{ getSeriesName(measurement.series_id) }}
-              </span>
-            </td>
-            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
-              {{ measurement.value.toFixed(2) }} {{ getSeriesUnit(measurement.series_id) }}
-            </td>
-          </tr>
-        </tbody>
       </table>
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="bg-gray-50 px-6 py-3 border-t border-gray-200 print:hidden">
+    <div v-if="totalPages > 1" class="bg-gray-50 px-6 py-3 border-t border-gray-200">
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-700">
           Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, filteredMeasurements.length) }} of {{ filteredMeasurements.length }} results
