@@ -378,7 +378,7 @@ Set up PostgreSQL locally and update `DATABASE_URL` in backend/.env
 
 Create `.env` file in backend/:
 ```env
-DATABASE_URL=postgresql://zai_user:zai_password@db:5432/zai_db
+DATABASE_URL=postgresql://measures_user:measures_password@measures-db:5432/measures_db
 SECRET_KEY=your-secret-key-change-in-production
 ```
 

@@ -2,9 +2,9 @@ services:
   measures-db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: zai_user
-      POSTGRES_PASSWORD: zai_password
-      POSTGRES_DB: zai_db
+      POSTGRES_USER: measures_user
+      POSTGRES_PASSWORD: measures_password
+      POSTGRES_DB: measures_db
     ports:
       - "5434:5432"
     volumes:
@@ -14,7 +14,7 @@ services:
     networks:
       - dokploy-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U zai_user -d zai_db"]
+      test: ["CMD-SHELL", "pg_isready -U measures_user -d measures_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +27,7 @@ services:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgresql://zai_user:zai_password@measures-db:5432/zai_db
+      - DATABASE_URL=postgresql://measures_user:measures_password@measures-db:5432/measures_db
     networks:
       - dokploy-network
     depends_on:

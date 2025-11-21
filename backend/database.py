@@ -5,7 +5,7 @@ import os
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://zai_user:zai_password@db:5432/zai_db"
+    "postgresql://measures_user:measures_password@measures-db:5432/measures_db"
 )
 
 engine = create_engine(DATABASE_URL)
