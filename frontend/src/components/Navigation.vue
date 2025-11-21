@@ -12,7 +12,7 @@
               to="/"
               class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
             >
-              View Data
+              Home
             </router-link>
 
             <router-link
@@ -20,7 +20,7 @@
               to="/dashboard"
               class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
             >
-              Dashboard
+              Admin Dashboard
             </router-link>
           </div>
         </div>

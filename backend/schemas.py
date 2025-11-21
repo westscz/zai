@@ -30,7 +30,6 @@ class SeriesBase(BaseModel):
     min_value: float
     max_value: float
     color: str = Field(default="#3B82F6", pattern="^#[0-9A-Fa-f]{6}$")
-    icon: str = Field(default="chart-line", max_length=50)
     unit: str = Field(default="", max_length=20)
 
     @field_validator('max_value')
@@ -48,7 +47,6 @@ class SeriesUpdate(BaseModel):
     min_value: Optional[float] = None
     max_value: Optional[float] = None
     color: Optional[str] = Field(None, pattern="^#[0-9A-Fa-f]{6}$")
-    icon: Optional[str] = Field(None, max_length=50)
     unit: Optional[str] = Field(None, max_length=20)
 
 class SeriesResponse(SeriesBase):
@@ -75,23 +73,6 @@ class MeasurementUpdate(BaseModel):
 class MeasurementResponse(MeasurementBase):
     id: int
     created_by: Optional[int]
-
-    class Config:
-        from_attributes = True
-
-# Sensor Schemas
-class SensorBase(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
-    series_id: int
-
-class SensorCreate(SensorBase):
-    pass
-
-class SensorResponse(SensorBase):
-    id: int
-    api_key: str
-    is_active: bool
-    created_at: datetime
 
     class Config:
         from_attributes = True

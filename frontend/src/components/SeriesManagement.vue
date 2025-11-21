@@ -178,17 +178,6 @@
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Icon</label>
-            <input
-              v-model="formData.icon"
-              type="text"
-              maxlength="50"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="e.g., chart-line, temperature-high"
-            />
-          </div>
-
           <div class="flex justify-end space-x-3 pt-4">
             <button
               type="button"

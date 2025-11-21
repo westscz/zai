@@ -1,4 +1,4 @@
-# ZAI Measurement Data Collection System
+# 📏 measures
 
 Full-stack application for collecting, storing, and visualizing measurement data from multiple series with user authentication, CRUD operations, interactive charts, and sensor API support.
 

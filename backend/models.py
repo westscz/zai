@@ -25,7 +25,6 @@ class Series(Base):
     min_value = Column(Float, nullable=False)
     max_value = Column(Float, nullable=False)
     color = Column(String(7), default="#3B82F6")  # Hex color code
-    icon = Column(String(50), default="chart-line")
     unit = Column(String(20), default="")
     created_at = Column(DateTime, default=datetime.utcnow)
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -44,15 +43,3 @@ class Measurement(Base):
 
     series = relationship("Series", back_populates="measurements")
     creator = relationship("User")
-
-class Sensor(Base):
-    __tablename__ = "sensors"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    api_key = Column(String(64), unique=True, index=True, nullable=False)
-    series_id = Column(Integer, ForeignKey("series.id"), nullable=False)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    series = relationship("Series")

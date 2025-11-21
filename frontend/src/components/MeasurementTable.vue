@@ -3,18 +3,9 @@
     <div class="px-6 py-4 border-b border-gray-200">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-900">Measurements</h2>
-        <div class="flex items-center space-x-4">
-          <span class="text-sm text-gray-600">
-            {{ filteredMeasurements.length }} records
-          </span>
-          <button
-            v-if="isAdmin"
-            @click="showAddModal = true"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
-          >
-            + Add Measurement
-          </button>
-        </div>
+        <span class="text-sm text-gray-600">
+          {{ filteredMeasurements.length }} records
+        </span>
       </div>
     </div>
 

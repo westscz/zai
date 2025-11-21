@@ -13,7 +13,7 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
       - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
     networks:
-      - app-network
+      - dokploy-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U zai_user -d zai_db"]
       interval: 10s
@@ -31,7 +31,7 @@ services:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql://zai_user:zai_password@db:5432/zai_db
     networks:
-      - app-network
+      - dokploy-network
     depends_on:
       db:
         condition: service_healthy
@@ -47,11 +47,11 @@ services:
     depends_on:
       - backend
     networks:
-      - app-network
+      - dokploy-network
 
 networks:
-  app-network:
-    driver: bridge
+  dokploy-network:
+    external: true  # Created by setup-network.sh locally, exists on Dokploy
 
 volumes:
   postgres_data:

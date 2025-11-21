@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, series, measurements, sensors
+from routers import auth, series, measurements
 
 app = FastAPI(
-    title="ZAI Measurement Data Collection API",
+    title="measures API",
     description="API for collecting and managing measurement data from multiple series",
     version="1.0.0"
 )
@@ -21,11 +21,10 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(series.router)
 app.include_router(measurements.router)
-app.include_router(sensors.router)
 
 @app.get("/")
 async def root():
-    return {"message": "ZAI Measurement Data Collection API"}
+    return {"message": "measures API"}
 
 @app.get("/api/health")
 async def health_check():
