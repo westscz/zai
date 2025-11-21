@@ -1,13 +1,12 @@
 services:
-  db:
+  measures-db:
     image: postgres:16-alpine
-    container_name: zai-postgres
     environment:
       POSTGRES_USER: zai_user
       POSTGRES_PASSWORD: zai_password
       POSTGRES_DB: zai_db
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
@@ -20,38 +19,36 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  measures-backend:
     build: ./backend
-    container_name: fastapi-backend
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgresql://zai_user:zai_password@db:5433/zai_db
+      - DATABASE_URL=postgresql://zai_user:zai_password@measures-db:5432/zai_db
     networks:
       - dokploy-network
     depends_on:
-      db:
+      measures-db:
         condition: service_healthy
 
-  frontend:
+  measures-frontend:
     build: ./frontend
-    container_name: vue-frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      - measures-backend
     networks:
       - dokploy-network
 
 networks:
   dokploy-network:
-    external: true  # Created by setup-network.sh locally, exists on Dokploy
+    external: true
 
 volumes:
   postgres_data:

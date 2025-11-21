@@ -10,9 +10,9 @@ TARGET: up
 up: setup-network
 	docker-compose up -d --build
 	@echo ""
-	@echo "  Frontend:  http://localhost:3000"
-	@echo "  Backend:   http://localhost:8000"
-	@echo "  API Docs:  http://localhost:8000/docs"
+	@echo "  Frontend:  http://localhost:3001"
+	@echo "  Backend:   http://localhost:8001"
+	@echo "  API Docs:  http://localhost:8001/docs"
 
 TARGET: down
 down:

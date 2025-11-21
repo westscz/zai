@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     port: 3000,
-    host: true
+    host: true,
+    allowedHosts: ['.traefik.me']
   }
 })
