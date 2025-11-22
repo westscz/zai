@@ -22,3 +22,5 @@ dist/
 
 # Logs
 *.log
+
+docs/docs.pdf
