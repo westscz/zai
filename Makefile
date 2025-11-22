@@ -37,7 +37,7 @@ reset:
 
 .PHONY: clean
 clean:
-# 	docker-compose down -v
+	docker-compose down -v
 	rm -rf backend/__pycache__
 	rm -rf frontend/node_modules
 

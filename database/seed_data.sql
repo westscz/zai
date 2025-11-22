@@ -1,5 +1,3 @@
--- database/seed_data.sql
--- Password is 'admin123' hashed with bcrypt
 INSERT INTO users (username, email, hashed_password, is_admin) VALUES
 ('admin', 'admin@example.com', '$2b$12$gmr/ukzv4FTceHI488ZTL.Ac/u4lX2Y7nhZ2R48vOS.7AlWzjE4nW', TRUE),
 ('reader', 'reader@example.com', '$2b$12$gmr/ukzv4FTceHI488ZTL.Ac/u4lX2Y7nhZ2R48vOS.7AlWzjE4nW', FALSE);
@@ -9,7 +7,6 @@ INSERT INTO series (name, description, min_value, max_value, color, icon, unit, 
 ('Humidity Sensor 1', 'Living room humidity monitoring', 0.0, 100.0, '#3B82F6', 'droplet', '%', 1),
 ('Pressure Sensor', 'Atmospheric pressure', 900.0, 1100.0, '#10B981', 'gauge', 'hPa', 1);
 
--- Generate sample measurements for last 7 days
 INSERT INTO measurements (series_id, value, timestamp, created_by)
 SELECT
     1,

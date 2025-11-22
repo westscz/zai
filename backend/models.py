@@ -1,4 +1,4 @@
-# backend/models.py
+
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -24,7 +24,7 @@ class Series(Base):
     description = Column(String(500))
     min_value = Column(Float, nullable=False)
     max_value = Column(Float, nullable=False)
-    color = Column(String(7), default="#3B82F6")  # Hex color code
+    color = Column(String(7), default="#3B82F6")
     unit = Column(String(20), default="")
     created_at = Column(DateTime, default=datetime.utcnow)
     created_by = Column(Integer, ForeignKey("users.id"))

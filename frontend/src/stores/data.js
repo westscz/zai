@@ -19,7 +19,7 @@ export const useDataStore = defineStore('data', () => {
       loading.value = true
       const response = await api.get('/api/series/')
       series.value = response.data
-      // Select all series by default
+
       if (selectedSeriesIds.value.length === 0) {
         selectedSeriesIds.value = series.value.map((s) => s.id)
       }

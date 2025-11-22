@@ -62,12 +62,12 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user')
   }
 
-  // Initialize from localStorage
+
   const savedUser = localStorage.getItem('user')
   if (savedUser && token.value) {
     try {
       user.value = JSON.parse(savedUser)
-      // Verify token is still valid
+
       fetchCurrentUser().catch(() => logout())
     } catch (e) {
       logout()

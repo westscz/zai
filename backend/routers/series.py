@@ -39,7 +39,7 @@ def create_series(
     current_user: User = Depends(get_current_admin_user)
 ):
     """Create a new series (admin only)"""
-    # Validate min/max
+
     if series_data.max_value <= series_data.min_value:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -77,12 +77,12 @@ def update_series(
             detail="Series not found"
         )
 
-    # Update fields if provided
+
     update_data = series_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(series, field, value)
 
-    # Validate min/max after update
+
     if series.max_value <= series.min_value:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

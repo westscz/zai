@@ -140,7 +140,7 @@ const filteredMeasurements = computed(() => {
     dataStore.selectedSeriesIds.includes(m.series_id)
   )
 
-  // Filter by chart selection range if set
+
   if (dataStore.chartSelectionRange) {
     const start = new Date(dataStore.chartSelectionRange.start).getTime()
     const end = new Date(dataStore.chartSelectionRange.end).getTime()
@@ -197,7 +197,7 @@ function selectMeasurement(measurement) {
 }
 
 async function editMeasurement(measurement) {
-  // TODO: Implement edit modal
+
   console.log('Edit measurement:', measurement)
 }
 

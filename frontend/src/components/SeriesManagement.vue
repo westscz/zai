@@ -255,7 +255,7 @@ function editSeries(series) {
 async function submitForm() {
   formError.value = ''
 
-  // Validation
+
   if (formData.max_value <= formData.min_value) {
     formError.value = 'Max value must be greater than min value'
     return

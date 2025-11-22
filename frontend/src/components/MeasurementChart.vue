@@ -79,7 +79,7 @@ import 'chartjs-adapter-date-fns'
 import { useDataStore } from '../stores/data'
 import { format } from 'date-fns'
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -97,7 +97,7 @@ const chartRef = ref(null)
 const loading = ref(false)
 const selectedTimeRange = ref('24h')
 
-// Selection state
+
 const isSelecting = ref(false)
 const selectionStart = ref(null)
 const selectionEnd = ref(null)
@@ -127,7 +127,7 @@ const chartOptions = computed(() => ({
       const index = element.index
       const dataset = chartData.value.datasets[datasetIndex]
 
-      // Find the measurement
+
       const seriesId = dataset.seriesId
       const timestamp = dataset.data[index].x
       const measurement = dataStore.measurements.find(
@@ -171,7 +171,7 @@ const chartOptions = computed(() => ({
       grid: {
         display: false
       },
-      // Zoom to selected range
+
       min: dataStore.chartSelectionRange ? dataStore.chartSelectionRange.start : undefined,
       max: dataStore.chartSelectionRange ? dataStore.chartSelectionRange.end : undefined
     },
@@ -187,7 +187,7 @@ const chartOptions = computed(() => ({
 const chartData = computed(() => {
   const datasets = []
 
-  // Group measurements by series
+
   const measurementsBySeries = {}
 
   dataStore.measurements.forEach(measurement => {
@@ -197,18 +197,18 @@ const chartData = computed(() => {
     measurementsBySeries[measurement.series_id].push(measurement)
   })
 
-  // Create dataset for each series
+
   Object.keys(measurementsBySeries).forEach(seriesId => {
     const series = dataStore.series.find(s => s.id === parseInt(seriesId))
     if (!series) return
 
-    // Only include selected series
+
     if (!dataStore.selectedSeriesIds.includes(series.id)) return
 
     const measurements = measurementsBySeries[seriesId]
       .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 
-    // Highlight selected measurement
+
     const pointBackgroundColor = measurements.map(m =>
       m.id === dataStore.selectedMeasurementId ? '#FBBF24' : series.color + '80'
     )
@@ -243,7 +243,7 @@ const chartData = computed(() => {
   }
 })
 
-// Mouse event handlers for selection
+
 function onMouseDown(event) {
   if (!chartRef.value?.chart) return
 
@@ -251,7 +251,7 @@ function onMouseDown(event) {
   const rect = chart.canvas.getBoundingClientRect()
   const x = event.clientX - rect.left
 
-  // Check if click is within chart area
+
   if (x >= chart.chartArea.left && x <= chart.chartArea.right) {
     isSelecting.value = true
     selectionStart.value = x
@@ -266,7 +266,7 @@ function onMouseMove(event) {
   const rect = chart.canvas.getBoundingClientRect()
   const x = event.clientX - rect.left
 
-  // Clamp to chart area
+
   selectionEnd.value = Math.max(chart.chartArea.left, Math.min(chart.chartArea.right, x))
 }
 
@@ -275,12 +275,12 @@ function onMouseUp() {
 
   const chart = chartRef.value.chart
 
-  // Convert pixel positions to data values
+
   const xScale = chart.scales.x
   const startX = Math.min(selectionStart.value, selectionEnd.value)
   const endX = Math.max(selectionStart.value, selectionEnd.value)
 
-  // Only set selection if dragged more than 10 pixels
+
   if (Math.abs(endX - startX) > 10) {
     const startDate = xScale.getValueForPixel(startX)
     const endDate = xScale.getValueForPixel(endX)
@@ -352,7 +352,7 @@ async function refreshData() {
   }
 }
 
-// Watch for changes in selected series
+
 watch(() => dataStore.selectedSeriesIds, () => {
   refreshData()
 }, { deep: true })

@@ -11,16 +11,16 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+
 app.include_router(auth.router)
 app.include_router(series.router)
 app.include_router(measurements.router)
@@ -33,7 +33,7 @@ async def root():
 async def health_check(db: Session = Depends(get_db)):
     """Health check endpoint - verifies API and database connectivity"""
     try:
-        # Test database connection by executing a simple query
+
         db.execute(text("SELECT 1"))
         return {
             "status": "healthy",

@@ -22,18 +22,18 @@ def get_measurements(
     """Get measurements with optional filters (public endpoint)"""
     query = db.query(Measurement)
 
-    # Filter by series IDs
+
     if series_ids:
         ids = [int(id.strip()) for id in series_ids.split(",")]
         query = query.filter(Measurement.series_id.in_(ids))
 
-    # Filter by date range
+
     if start_date:
         query = query.filter(Measurement.timestamp >= start_date)
     if end_date:
         query = query.filter(Measurement.timestamp <= end_date)
 
-    # Order by timestamp and limit
+
     measurements = query.order_by(Measurement.timestamp.desc()).limit(limit).all()
 
     return measurements
@@ -60,7 +60,7 @@ def create_measurement(
     current_user: User = Depends(get_current_admin_user)
 ):
     """Create a new measurement (admin only)"""
-    # Validate series exists
+
     series = db.query(Series).filter(Series.id == measurement_data.series_id).first()
     if not series:
         raise HTTPException(
@@ -68,7 +68,7 @@ def create_measurement(
             detail="Series not found"
         )
 
-    # Validate value is within series range
+
     if not (series.min_value <= measurement_data.value <= series.max_value):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -102,12 +102,12 @@ def update_measurement(
             detail="Measurement not found"
         )
 
-    # Get series for validation
+
     series = db.query(Series).filter(Series.id == measurement.series_id).first()
 
-    # Update fields if provided
+
     if measurement_update.value is not None:
-        # Validate value is within series range
+
         if not (series.min_value <= measurement_update.value <= series.max_value):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

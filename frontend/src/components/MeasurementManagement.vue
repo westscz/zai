@@ -360,7 +360,7 @@ function editMeasurement(measurement) {
 async function submitForm() {
   formError.value = ''
 
-  // Validation
+
   if (selectedSeries.value) {
     if (formData.value < selectedSeries.value.min_value || formData.value > selectedSeries.value.max_value) {
       formError.value = `Value must be between ${selectedSeries.value.min_value} and ${selectedSeries.value.max_value}`
@@ -405,7 +405,7 @@ async function deleteMeasurement(measurement) {
   }
 }
 
-// Focus trap for modal accessibility
+
 function trapFocus(event) {
   if (!modalRef.value) return
 
@@ -424,7 +424,7 @@ function trapFocus(event) {
   }
 }
 
-// Auto-focus first input when modal opens
+
 watch([showCreateModal, showEditModal], async ([create, edit]) => {
   if (create || edit) {
     await nextTick()

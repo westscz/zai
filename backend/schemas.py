@@ -1,9 +1,9 @@
-# backend/schemas.py
+
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
 from typing import Optional
 
-# User Schemas
+
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
@@ -23,7 +23,7 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
-# Series Schemas
+
 class SeriesBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)
@@ -57,7 +57,7 @@ class SeriesResponse(SeriesBase):
     class Config:
         from_attributes = True
 
-# Measurement Schemas
+
 class MeasurementBase(BaseModel):
     series_id: int
     value: float
@@ -77,7 +77,7 @@ class MeasurementResponse(MeasurementBase):
     class Config:
         from_attributes = True
 
-# Auth Schemas
+
 class Token(BaseModel):
     access_token: str
     token_type: str

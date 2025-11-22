@@ -9,7 +9,7 @@ const api = axios.create({
   },
 })
 
-// Add token to requests if available
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   if (token) {
@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Handle 401 errors (token expired)
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
